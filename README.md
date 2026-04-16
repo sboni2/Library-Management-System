@@ -116,5 +116,7 @@ demo/
 ## 👨‍💻 Author
 
 **Surendra**
-##Computer Science Student
-##GITAM University
+
+Computer Science Student
+
+GITAM University
