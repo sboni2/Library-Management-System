@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Availability</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            margin: auto;
+            border: 2px solid black;
+            padding: 20px;
+        }
+
+        .left {
+            width: 30%;
+        }
+
+        .left div {
+            margin: 10px 0;
+        }
+
+        .right {
+            width: 70%;
+        }
+
+        .row {
+            display: flex;
+            margin: 10px 0;
+        }
+
+        .row label {
+            width: 200px;
+        }
+
+        select {
+            width: 200px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 15px 10px 0 0;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <h2>Transactions</h2>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<div class="container">
+
+    <!-- LEFT MENU -->
+    <div class="left">
+        <div class="link" onclick="go('viewBooks.html')">Is book available?</div>
+        <div class="link" onclick="go('issueBook.html')">Issue book?</div>
+        <div class="link" onclick="go('returnBook.html')">Return book?</div>
+        <div class="link" onclick="go('payFine.html')">Pay Fine?</div>
+    </div>
+
+    <!-- RIGHT CONTENT -->
+    <div class="right">
+
+        <h3>Book Availability</h3>
+
+        <div class="row">
+            <label>Enter Book Name</label>
+            <select id="bookSelect"></select>
+        </div>
+
+        <div class="row">
+            <label>Enter Author</label>
+            <select id="authorSelect"></select>
+        </div>
+
+        <button onclick="search()">Search</button>
+        <button onclick="cancel()">Cancel</button>
+
+        <!-- RESULT TABLE -->
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Author Name</th>
+                    <th>Serial Number</th>
+                    <th>Available</th>
+                    <th>Select to issue the book</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<div style="text-align:right; margin:20px;">
+    <span class="link" onclick="logout()">Log Out</span>
+</div>
+
+<script>
+
+// Load dropdowns
+window.onload = function(){
+    fetch("/books")
+    .then(res => res.json())
+    .then(data => {
+
+        let bookSet = new Set();
+        let authorSet = new Set();
+
+        data.forEach(b => {
+            bookSet.add(b.title);
+            authorSet.add(b.author);
+        });
+
+        bookSet.forEach(title => {
+            bookSelect.innerHTML += `<option>${title}</option>`;
+        });
+
+        authorSet.forEach(author => {
+            authorSelect.innerHTML += `<option>${author}</option>`;
+        });
+    });
+};
+
+// SEARCH FUNCTION
+function search(){
+
+    let title = bookSelect.value;
+    let author = authorSelect.value;
+
+    fetch("/books")
+    .then(res => res.json())
+    .then(data => {
+
+        let tbody = document.querySelector("#resultTable tbody");
+        tbody.innerHTML = "";
+
+        let filtered = data.filter(b =>
+            b.title === title && b.author === author
+        );
+
+        if(filtered.length === 0){
+            tbody.innerHTML = "<tr><td colspan='5'>No books found</td></tr>";
+            return;
+        }
+
+        filtered.forEach(b => {
+
+            let available = b.quantity > 0 ? "Y" : "N";
+
+            let row = `
+                <tr>
+                    <td>${b.title}</td>
+                    <td>${b.author}</td>
+                    <td>${b.id}</td>
+                    <td>${available}</td>
+                    <td>
+                        ${available === "Y" 
+                            ? `<input type="radio" name="selectBook" value="${b.id}">`
+                            : ""
+                        }
+                    </td>
+                </tr>
+            `;
+
+            tbody.innerHTML += row;
+        });
+    });
+}
+
+// CANCEL
+function cancel(){
+    document.querySelector("#resultTable tbody").innerHTML = "";
+}
+
+// NAVIGATION
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

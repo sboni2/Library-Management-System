@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Book/Movie</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            margin: auto;
+        }
+
+        .left {
+            width: 30%;
+            padding: 10px;
+        }
+
+        .left div {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .right {
+            width: 70%;
+            border: 2px solid black;
+            padding: 20px;
+        }
+
+        .row {
+            display: flex;
+            margin: 10px 0;
+        }
+
+        .row label {
+            width: 200px;
+        }
+
+        input, select {
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 20px 10px 0 0;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<div class="container">
+
+    <!-- LEFT MENU -->
+    <div class="left">
+        <div>Membership</div>
+        <div class="link" onclick="go('addMembership.html')">Add</div>
+        <div class="link" onclick="go('updateMembership.html')">Update</div>
+
+        <div>Books/Movies</div>
+        <div class="link" onclick="go('addBook.html')">Add</div>
+        <div class="link" onclick="go('updateBook.html')">Update</div>
+
+        <div>User Management</div>
+        <div class="link" onclick="go('addUser.html')">Add</div>
+        <div class="link" onclick="go('updateUser.html')">Update</div>
+    </div>
+
+    <!-- FORM -->
+    <div class="right">
+
+        <h3>Update Book / Movie</h3>
+
+        <div class="row">
+            <label>Type</label>
+            <div>
+                <input type="radio" name="type" value="book" checked> Book
+                <input type="radio" name="type" value="movie"> Movie
+            </div>
+        </div>
+
+        <div class="row">
+            <label>Book/Movie Name</label>
+            <input id="name">
+        </div>
+
+        <div class="row">
+            <label>Serial No</label>
+            <input id="id">
+        </div>
+
+        <div class="row">
+            <label>Status</label>
+            <select id="status">
+                <option value="">Select</option>
+                <option value="available">Available</option>
+                <option value="not">Not Available</option>
+            </select>
+        </div>
+
+        <div class="row">
+            <label>Date</label>
+            <input type="date" id="date">
+        </div>
+
+        <button onclick="cancel()">Cancel</button>
+        <button onclick="submitForm()">Confirm</button>
+
+        <div class="footer">
+            <span class="link" onclick="logout()">Log Out</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// Submit update
+function submitForm(){
+
+    let id = document.getElementById("id").value;
+    let name = document.getElementById("name").value;
+    let status = document.getElementById("status").value;
+    let date = document.getElementById("date").value;
+
+    let type = document.querySelector('input[name="type"]:checked');
+
+    if(!id || !name || !status || !date || !type){
+        alert("All fields are required");
+        return;
+    }
+
+    fetch("/updateBook", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            id,
+            title: name,
+            status,
+            date,
+            type: type.value
+        })
+    });
+
+    alert("Book/Movie Updated Successfully");
+    window.location.href = "maintenance.html";
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    window.location.href = "home.html";
+}
+
+function cancel(){
+    window.location.href = "maintenance.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        h2 {
+            color: green;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<!-- MESSAGE -->
+<div class="container">
+    <h2>Transaction Completed Successfully</h2>
+
+    <button onclick="goHome()">Go to Home</button>
+</div>
+
+<div style="text-align:right; margin:20px;">
+    <span class="link" onclick="logout()">Log Out</span>
+</div>
+
+<script>
+
+// Navigation
+function goHome(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

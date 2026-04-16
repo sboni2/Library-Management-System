@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Home</title>
+
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .menu {
+            margin: 10px 40px;
+        }
+
+        .menu span {
+            margin-right: 30px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <span>
+        <span class="link" onclick="goBack()">Back</span>
+    </span>
+</div>
+
+<!-- Title -->
+<h2 style="text-align:center;">Admin Home Page</h2>
+
+<!-- Menu -->
+<div class="menu">
+    <span class="link" onclick="go('maintenance.html')">Maintenance</span>
+    <span class="link" onclick="go('reports.html')">Reports</span>
+    <span class="link" onclick="go('transactions.html')">Transactions</span>
+</div>
+
+<!-- Table -->
+<div class="container">
+
+    <h3 style="text-align:center;">Product Details</h3>
+
+    <table>
+        <tr>
+            <th>Code No From</th>
+            <th>Code No To</th>
+            <th>Category</th>
+        </tr>
+
+        <tr>
+            <td>SC(B/M)000001</td>
+            <td>SC(B/M)000999</td>
+            <td>Science</td>
+        </tr>
+
+        <tr>
+            <td>EC(B/M)000001</td>
+            <td>EC(B/M)000999</td>
+            <td>Economics</td>
+        </tr>
+
+        <tr>
+            <td>FC(B/M)000001</td>
+            <td>FC(B/M)000999</td>
+            <td>Fiction</td>
+        </tr>
+
+        <tr>
+            <td>CH(B/M)000001</td>
+            <td>CH(B/M)000999</td>
+            <td>Children</td>
+        </tr>
+
+        <tr>
+            <td>PD(B/M)000001</td>
+            <td>PD(B/M)000999</td>
+            <td>Personal Development</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <span class="link" onclick="logout()">Log Out</span>
+    </div>
+
+</div>
+
+<script>
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+function goBack(){
+    window.location.href = "index.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>

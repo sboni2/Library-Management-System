@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Issue Requests</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            width: 95%;
+            margin: auto;
+        }
+
+        .left {
+            width: 25%;
+            padding: 10px;
+        }
+
+        .left div {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .right {
+            width: 75%;
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <h2>Reports</h2>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<div class="container">
+
+    <!-- LEFT MENU -->
+    <div class="left">
+        <div onclick="go('booksReport.html')">Master List of Books</div>
+        <div onclick="go('moviesReport.html')">Master List of Movies</div>
+        <div onclick="go('membershipReport.html')">Master List of Memberships</div>
+        <div onclick="go('activeIssues.html')">Active Issues</div>
+        <div onclick="go('overdue.html')">Overdue returns</div>
+        <div onclick="go('pending.html')">Issue Requests</div>
+    </div>
+
+    <!-- RIGHT TABLE -->
+    <div class="right">
+
+        <h3 style="text-align:center;">Issue Requests</h3>
+
+        <table id="requestTable">
+            <thead>
+                <tr>
+                    <th>Membership Id</th>
+                    <th>Name of Book/Movie</th>
+                    <th>Requested Date</th>
+                    <th>Request Fulfilled Date</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button onclick="loadRequests()">Load Data</button>
+        <button onclick="goBack()">Back</button>
+
+        <div class="footer">
+            <span class="link" onclick="logout()">Log Out</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// TEMP DATA
+let requests = [
+    {
+        memberId: 101,
+        name: "Java",
+        requestDate: "2026-04-10",
+        fulfilledDate: ""
+    },
+    {
+        memberId: 102,
+        name: "Python",
+        requestDate: "2026-04-08",
+        fulfilledDate: "2026-04-09"
+    }
+];
+
+// Load table
+function loadRequests(){
+
+    let tbody = document.querySelector("#requestTable tbody");
+    tbody.innerHTML = "";
+
+    requests.forEach(r => {
+
+        let status = r.fulfilledDate ? r.fulfilledDate : "Pending";
+
+        let row = `
+            <tr>
+                <td>${r.memberId}</td>
+                <td>${r.name}</td>
+                <td>${r.requestDate}</td>
+                <td>${status}</td>
+            </tr>
+        `;
+
+        tbody.innerHTML += row;
+    });
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function goBack(){
+    window.location.href = "reports.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

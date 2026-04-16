@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Books Report</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            width: 95%;
+            margin: auto;
+        }
+
+        .left {
+            width: 25%;
+            padding: 10px;
+        }
+
+        .left div {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .right {
+            width: 75%;
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <h2>Reports</h2>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<div class="container">
+
+    <!-- LEFT MENU -->
+    <div class="left">
+        <div onclick="go('booksReport.html')">Master List of Books</div>
+        <div onclick="go('moviesReport.html')">Master List of Movies</div>
+        <div onclick="go('membershipReport.html')">Master List of Memberships</div>
+        <div onclick="go('activeIssues.html')">Active Issues</div>
+        <div onclick="go('overdue.html')">Overdue returns</div>
+        <div onclick="go('pending.html')">Issue Requests</div>
+    </div>
+
+    <!-- RIGHT TABLE -->
+    <div class="right">
+
+        <h3 style="text-align:center;">Master List of Books</h3>
+
+        <table id="bookTable">
+            <thead>
+                <tr>
+                    <th>Serial No</th>
+                    <th>Name of Book</th>
+                    <th>Author Name</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Cost</th>
+                    <th>Procurement Date</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button onclick="loadBooks()">Load Data</button>
+
+        <button onclick="goBack()">Back</button>
+
+        <div class="footer">
+            <span class="link" onclick="logout()">Log Out</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// Load data
+function loadBooks(){
+    fetch("/books")
+    .then(res => res.json())
+    .then(data => {
+
+        let tbody = document.querySelector("#bookTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(b => {
+
+            let status = b.quantity > 0 ? "Available" : "Not Available";
+
+            let row = `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${b.title}</td>
+                    <td>${b.author}</td>
+                    <td>General</td>
+                    <td>${status}</td>
+                    <td>100</td>
+                    <td>2026-04-16</td>
+                </tr>
+            `;
+
+            tbody.innerHTML += row;
+        });
+    });
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function goBack(){
+    window.location.href = "reports.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

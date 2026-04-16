@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay Fine</title>
+
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .left {
+            width: 30%;
+            padding: 20px;
+        }
+
+        .right {
+            width: 70%;
+            border: 2px solid black;
+            padding: 20px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            display: block;
+            margin: 8px 0;
+        }
+
+        .row {
+            display: flex;
+            margin: 8px 0;
+        }
+
+        .row label {
+            width: 200px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT SIDE MENU -->
+    <div class="left">
+        <div class="link" onclick="goHome()">Home</div>
+
+        <h3>Transactions</h3>
+
+        <div class="link" onclick="go('viewBooks.html')">Is book available?</div>
+        <div class="link" onclick="go('issueBook.html')">Issue book?</div>
+        <div class="link" onclick="go('returnBook.html')">Return book?</div>
+        <div class="link" onclick="go('payFine.html')">Pay Fine?</div>
+    </div>
+
+    <!-- RIGHT SIDE FORM -->
+    <div class="right">
+
+        <div class="topbar">
+            <h2>Pay Fine</h2>
+            <span class="link" onclick="logout()">Log Out</span>
+        </div>
+
+        <!-- Form -->
+        <div class="row">
+            <label>Enter Book Name</label>
+            <input id="bookName">
+        </div>
+
+        <div class="row">
+            <label>Enter Author</label>
+            <input id="author">
+        </div>
+
+        <div class="row">
+            <label>Serial No</label>
+            <input id="serial">
+        </div>
+
+        <div class="row">
+            <label>Issue Date</label>
+            <input type="date" id="issueDate">
+        </div>
+
+        <div class="row">
+            <label>Return Date</label>
+            <input type="date" id="returnDate">
+        </div>
+
+        <div class="row">
+            <label>Actual Return Date</label>
+            <input type="date" id="actualDate">
+        </div>
+
+        <div class="row">
+            <label>Fine Calculated</label>
+            <input id="fine" value="0" readonly>
+        </div>
+
+        <div class="row">
+            <label>Fine Paid</label>
+            <input type="checkbox" id="paid">
+        </div>
+
+        <div class="row">
+            <label>Remarks</label>
+            <textarea id="remarks"></textarea>
+        </div>
+
+        <div class="buttons">
+            <button onclick="cancel()">Cancel</button>
+            <button onclick="confirm()">Confirm</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    window.location.href = "home.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+// Fine calculation logic
+document.getElementById("actualDate").addEventListener("change", calculateFine);
+
+function calculateFine(){
+    let returnDate = new Date(returnDateInput.value);
+    let actualDate = new Date(actualDateInput.value);
+
+    if(returnDate && actualDate){
+        let diff = (actualDate - returnDate) / (1000 * 60 * 60 * 24);
+
+        if(diff > 0){
+            document.getElementById("fine").value = diff * 5; // ₹5 per day
+        } else {
+            document.getElementById("fine").value = 0;
+        }
+    }
+}
+
+// Confirm
+function confirm(){
+    let fine = document.getElementById("fine").value;
+    let paid = document.getElementById("paid").checked;
+
+    if(fine > 0 && !paid){
+        alert("Please pay the fine before confirming");
+        return;
+    }
+
+    fetch("/payFine", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            bookId: serial.value
+        })
+    })
+    .then(res => res.text())
+    .then(alert);
+}
+
+// Cancel
+function cancel(){
+    window.location.href = "home.html";
+}
+
+</script>
+
+</body>
+</html>

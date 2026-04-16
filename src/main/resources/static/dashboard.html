@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Dashboard</title>
+</head>
+<body>
+
+<h2>Library Dashboard</h2>
+
+<!-- Maintenance (Admin Only) -->
+<div id="maintenance">
+    <h3>Add Book</h3>
+
+    <input id="bid" placeholder="Book ID"><br><br>
+    <input id="title" placeholder="Title"><br><br>
+    <input id="author" placeholder="Author"><br><br>
+    <input id="qty" placeholder="Quantity"><br><br>
+
+    <button onclick="addBook()">Add Book</button>
+</div>
+
+<hr>
+
+<!-- Search -->
+<h3>Books List</h3>
+<button onclick="loadBooks()">Load Books</button>
+<ul id="bookList"></ul>
+
+<hr>
+
+<!-- Issue -->
+<h3>Issue Book</h3>
+<input id="iuid" placeholder="User ID">
+<input id="ibid" placeholder="Book ID">
+<button onclick="issueBook()">Issue</button>
+
+<hr>
+
+<!-- Return -->
+<h3>Return Book</h3>
+<input id="ruid" placeholder="User ID">
+<input id="rbid" placeholder="Book ID">
+<button onclick="returnBook()">Return</button>
+
+<hr>
+
+<!-- Fine -->
+<h3>Pay Fine</h3>
+<input id="fbid" placeholder="Book ID">
+<button onclick="payFine()">Pay Fine</button>
+
+<hr>
+
+<!-- Reports -->
+<h3>Reports</h3>
+<button onclick="loadActive()">Active Issues</button>
+<button onclick="loadOverdue()">Overdue</button>
+<button onclick="loadHistory()">History</button>
+
+<ul id="reportList"></ul>
+
+<script>
+
+// Role-based access
+let role = localStorage.getItem("role");
+if(role !== "admin"){
+    document.getElementById("maintenance").style.display = "none";
+}
+
+// Add Book
+function addBook(){
+    let id = bid.value;
+    let titleVal = title.value;
+    let authorVal = author.value;
+    let qtyVal = qty.value;
+
+    if(!id || !titleVal || !authorVal || !qtyVal){
+        alert("Fill all fields");
+        return;
+    }
+
+    fetch("/addBook", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            id: parseInt(id),
+            title: titleVal,
+            author: authorVal,
+            quantity: parseInt(qtyVal)
+        })
+    })
+    .then(res => res.text())
+    .then(alert);
+}
+
+// Load Books
+function loadBooks(){
+    fetch("/books")
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById("bookList");
+        list.innerHTML = "";
+
+        data.forEach(b => {
+            list.innerHTML += `<li>
+                <input type="radio" name="bookSelect">
+                ${b.id} - ${b.title} (${b.quantity})
+            </li>`;
+        });
+    });
+}
+
+// Issue Book
+function issueBook(){
+    fetch("/issue", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            userId: parseInt(iuid.value),
+            bookId: parseInt(ibid.value)
+        })
+    })
+    .then(res => res.text())
+    .then(alert);
+}
+
+// Return Book
+function returnBook(){
+    fetch("/return", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            userId: parseInt(ruid.value),
+            bookId: parseInt(rbid.value)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data && data.fine > 0){
+            alert("Fine: ₹" + data.fine);
+        } else {
+            alert("Returned Successfully");
+        }
+    });
+}
+
+// Pay Fine
+function payFine(){
+    fetch("/payFine", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            bookId: parseInt(fbid.value)
+        })
+    })
+    .then(res => res.text())
+    .then(alert);
+}
+
+// Reports
+function loadActive(){
+    fetch("/active")
+    .then(res => res.json())
+    .then(showReports);
+}
+
+function loadOverdue(){
+    fetch("/overdue")
+    .then(res => res.json())
+    .then(showReports);
+}
+
+function loadHistory(){
+    fetch("/history")
+    .then(res => res.json())
+    .then(showReports);
+}
+
+function showReports(data){
+    let list = document.getElementById("reportList");
+    list.innerHTML = "";
+
+    data.forEach(item => {
+        list.innerHTML += `<li>${JSON.stringify(item)}</li>`;
+    });
+}
+
+</script>
+
+</body>
+</html>

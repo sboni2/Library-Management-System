@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Maintenance</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 60%;
+            margin: 40px auto;
+            border: 2px solid black;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .actions span {
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <h2>Housekeeping</h2>
+
+    <!-- Membership -->
+    <div class="row">
+        <div>Membership</div>
+        <div class="actions">
+            <span class="link" onclick="go('addMembership.html')">Add</span>
+            <span class="link" onclick="go('updateMembership.html')">Update</span>
+        </div>
+    </div>
+
+    <!-- Books/Movies -->
+    <div class="row">
+        <div>Books/Movies</div>
+        <div class="actions">
+            <span class="link" onclick="go('addBook.html')">Add</span>
+            <span class="link" onclick="go('updateBook.html')">Update</span>
+        </div>
+    </div>
+
+    <!-- User Management -->
+    <div class="row">
+        <div>User Management</div>
+        <div class="actions">
+            <span class="link" onclick="go('addUser.html')">Add</span>
+            <span class="link" onclick="go('updateUser.html')">Update</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span class="link" onclick="logout()">Log Out</span>
+    </div>
+
+</div>
+
+<script>
+
+// Restrict access (Admin only)
+let role = localStorage.getItem("role");
+
+if(role !== "admin"){
+    alert("Access Denied");
+    window.location.href = "index.html";
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    window.location.href = "home.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Issue Book</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            margin: auto;
+            border: 2px solid black;
+            padding: 20px;
+        }
+
+        .left {
+            width: 30%;
+        }
+
+        .left div {
+            margin: 10px 0;
+        }
+
+        .right {
+            width: 70%;
+        }
+
+        .row {
+            display: flex;
+            margin: 10px 0;
+        }
+
+        .row label {
+            width: 200px;
+        }
+
+        input, select {
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 20px 10px 0 0;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <h2>Transactions</h2>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<div class="container">
+
+    <!-- LEFT MENU -->
+    <div class="left">
+        <div class="link" onclick="go('viewBooks.html')">Is book available?</div>
+        <div class="link" onclick="go('issueBook.html')">Issue book?</div>
+        <div class="link" onclick="go('returnBook.html')">Return book?</div>
+        <div class="link" onclick="go('payFine.html')">Pay Fine?</div>
+    </div>
+
+    <!-- RIGHT FORM -->
+    <div class="right">
+
+        <h3>Book Issue</h3>
+
+        <div class="row">
+            <label>Enter Book Name</label>
+            <select id="bookSelect" onchange="fillAuthor()"></select>
+        </div>
+
+        <div class="row">
+            <label>Enter Author</label>
+            <input id="author" readonly>
+        </div>
+
+        <div class="row">
+            <label>Issue Date</label>
+            <input type="date" id="issueDate">
+        </div>
+
+        <div class="row">
+            <label>Return Date</label>
+            <input type="date" id="returnDate">
+        </div>
+
+        <div class="row">
+            <label>Remarks</label>
+            <textarea id="remarks"></textarea>
+        </div>
+
+        <button onclick="cancel()">Cancel</button>
+        <button onclick="confirmIssue()">Confirm</button>
+
+    </div>
+
+</div>
+
+<div style="text-align:right; margin:20px;">
+    <span class="link" onclick="logout()">Log Out</span>
+</div>
+
+<script>
+
+// Load books
+let books = [];
+
+window.onload = function(){
+
+    fetch("/books")
+    .then(res => res.json())
+    .then(data => {
+
+        books = data;
+
+        let uniqueBooks = [...new Set(data.map(b => b.title))];
+
+        uniqueBooks.forEach(title => {
+            bookSelect.innerHTML += `<option>${title}</option>`;
+        });
+
+        setToday();
+        fillAuthor();
+    });
+};
+
+// Auto-fill author
+function fillAuthor(){
+    let selected = bookSelect.value;
+    let book = books.find(b => b.title === selected);
+
+    if(book){
+        document.getElementById("author").value = book.author;
+    }
+}
+
+// Set today date
+function setToday(){
+    let today = new Date().toISOString().split("T")[0];
+    issueDate.value = today;
+    issueDate.min = today;
+}
+
+// Validate + Confirm
+function confirmIssue(){
+
+    let book = bookSelect.value;
+    let author = author.value;
+    let issue = issueDate.value;
+    let ret = returnDate.value;
+
+    if(!book || !issue || !ret){
+        alert("Please fill required fields");
+        return;
+    }
+
+    let issueDateObj = new Date(issue);
+    let returnDateObj = new Date(ret);
+
+    let diff = (returnDateObj - issueDateObj) / (1000*60*60*24);
+
+    if(diff > 15){
+        alert("Return date cannot exceed 15 days");
+        return;
+    }
+
+    fetch("/issue", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            bookName: book
+        })
+    })
+    .then(res => res.text())
+    .then(alert);
+}
+
+// Cancel
+function cancel(){
+    window.location.href = "transactions.html";
+}
+
+// Navigation
+function go(page){ window.location.href = page; }
+
+function goHome(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

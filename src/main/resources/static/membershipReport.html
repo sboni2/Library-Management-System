@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Membership Report</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            width: 98%;
+            margin: auto;
+        }
+
+        .left {
+            width: 20%;
+            padding: 10px;
+        }
+
+        .left div {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .right {
+            width: 80%;
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            margin-right: 10px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <h2>Reports</h2>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<div class="container">
+
+    <!-- LEFT MENU -->
+    <div class="left">
+        <div onclick="go('booksReport.html')">Master List of Books</div>
+        <div onclick="go('moviesReport.html')">Master List of Movies</div>
+        <div onclick="go('membershipReport.html')">Master List of Memberships</div>
+        <div onclick="go('activeIssues.html')">Active Issues</div>
+        <div onclick="go('overdue.html')">Overdue returns</div>
+        <div onclick="go('pending.html')">Issue Requests</div>
+    </div>
+
+    <!-- RIGHT TABLE -->
+    <div class="right">
+
+        <h3 style="text-align:center;">List of Active Memberships</h3>
+
+        <table id="memberTable">
+            <thead>
+                <tr>
+                    <th>Membership Id</th>
+                    <th>Name of Member</th>
+                    <th>Contact Number</th>
+                    <th>Contact Address</th>
+                    <th>Aadhar Card No</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Amount Pending</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button onclick="loadMembers()">Load Data</button>
+        <button onclick="goBack()">Back</button>
+
+        <div class="footer">
+            <span class="link" onclick="logout()">Log Out</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// Temporary membership data (for now)
+let members = [
+    {
+        id: 1,
+        name: "Surendra",
+        phone: "9876543210",
+        address: "Hyderabad",
+        aadhar: "123456789012",
+        start: "2026-01-01",
+        end: "2026-07-01",
+        status: "Active",
+        fine: 0
+    },
+    {
+        id: 2,
+        name: "Rahul",
+        phone: "9123456780",
+        address: "Vizag",
+        aadhar: "987654321098",
+        start: "2025-01-01",
+        end: "2025-07-01",
+        status: "Inactive",
+        fine: 50
+    }
+];
+
+// Load table
+function loadMembers(){
+
+    let tbody = document.querySelector("#memberTable tbody");
+    tbody.innerHTML = "";
+
+    members.forEach(m => {
+
+        let row = `
+            <tr>
+                <td>${m.id}</td>
+                <td>${m.name}</td>
+                <td>${m.phone}</td>
+                <td>${m.address}</td>
+                <td>${m.aadhar}</td>
+                <td>${m.start}</td>
+                <td>${m.end}</td>
+                <td>${m.status}</td>
+                <td>${m.fine}</td>
+            </tr>
+        `;
+
+        tbody.innerHTML += row;
+    });
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function goBack(){
+    window.location.href = "reports.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

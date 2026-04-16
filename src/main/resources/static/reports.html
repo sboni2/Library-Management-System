@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports</title>
+
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 60%;
+            margin: 40px auto;
+            border: 2px solid black;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .item {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<!-- MAIN BOX -->
+<div class="container">
+
+    <h2>Available Reports</h2>
+
+    <div class="item" onclick="go('booksReport.html')">
+        Master List of Books
+    </div>
+
+    <div class="item" onclick="go('moviesReport.html')">
+        Master List of Movies
+    </div>
+
+    <div class="item" onclick="go('membershipReport.html')">
+        Master List of Memberships
+    </div>
+
+    <div class="item" onclick="go('activeIssues.html')">
+        Active Issues
+    </div>
+
+    <div class="item" onclick="go('overdue.html')">
+        Overdue returns
+    </div>
+
+    <div class="item" onclick="go('pending.html')">
+        Pending Issue Requests
+    </div>
+
+    <div class="footer">
+        <span class="link" onclick="logout()">Log Out</span>
+    </div>
+
+</div>
+
+<script>
+
+// Role check
+let role = localStorage.getItem("role");
+
+if(!role){
+    alert("Please login first");
+    window.location.href = "index.html";
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

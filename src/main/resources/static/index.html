@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+
+    <style>
+        body { font-family: Arial; background: #f5f5f5; }
+        .container {
+            width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border: 2px solid black;
+            background: white;
+            text-align: center;
+        }
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 2px solid black;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+        #msg { color: red; }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Library Management System</h2>
+
+    <input id="username" placeholder="User ID">
+    <input id="password" type="password" placeholder="Password">
+
+    <br>
+    <button onclick="login()">Login</button>
+    <button onclick="cancel()">Cancel</button>
+
+    <p id="msg"></p>
+</div>
+
+<script>
+function cancel(){
+    document.getElementById("username").value="";
+    document.getElementById("password").value="";
+    document.getElementById("msg").innerText="";
+}
+
+function login(){
+
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    if(!user || !pass){
+        document.getElementById("msg").innerText="Enter all fields";
+        return;
+    }
+
+    fetch("/login", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            username:user,
+            password:pass
+        })
+    })
+    .then(res=>res.text())
+    .then(result=>{
+
+        result = result.trim(); // 🔥 important
+
+        if(result==="admin"){
+            localStorage.setItem("role","admin");
+            window.location.href="home.html";
+        }
+        else if(result==="user"){
+            localStorage.setItem("role","user");
+            window.location.href="userHome.html";
+        }
+        else{
+            document.getElementById("msg").innerText="Invalid login";
+        }
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Overdue Returns</title>
+
+    <style>
+        body { font-family: Arial; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            width: 95%;
+            margin: auto;
+        }
+
+        .left {
+            width: 25%;
+            padding: 10px;
+        }
+
+        .left div {
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .right {
+            width: 75%;
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <h2>Reports</h2>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<div class="container">
+
+    <!-- LEFT MENU -->
+    <div class="left">
+        <div onclick="go('booksReport.html')">Master List of Books</div>
+        <div onclick="go('moviesReport.html')">Master List of Movies</div>
+        <div onclick="go('membershipReport.html')">Master List of Memberships</div>
+        <div onclick="go('activeIssues.html')">Active Issues</div>
+        <div onclick="go('overdue.html')">Overdue returns</div>
+        <div onclick="go('pending.html')">Issue Requests</div>
+    </div>
+
+    <!-- RIGHT TABLE -->
+    <div class="right">
+
+        <h3 style="text-align:center;">Overdue Returns</h3>
+
+        <table id="overdueTable">
+            <thead>
+                <tr>
+                    <th>Serial No</th>
+                    <th>Name of Book</th>
+                    <th>Membership Id</th>
+                    <th>Date of Issue</th>
+                    <th>Date of Return</th>
+                    <th>Fine</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button onclick="loadOverdue()">Load Data</button>
+        <button onclick="goBack()">Back</button>
+
+        <div class="footer">
+            <span class="link" onclick="logout()">Log Out</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// TEMP DATA (replace with backend later)
+let issues = [
+    {
+        id: 1,
+        name: "Java",
+        memberId: 101,
+        issueDate: "2026-04-01",
+        returnDate: "2026-04-05" // overdue
+    },
+    {
+        id: 2,
+        name: "Python",
+        memberId: 102,
+        issueDate: "2026-04-10",
+        returnDate: "2026-04-20" // not overdue
+    }
+];
+
+// Load overdue data
+function loadOverdue(){
+
+    let tbody = document.querySelector("#overdueTable tbody");
+    tbody.innerHTML = "";
+
+    let today = new Date();
+
+    issues.forEach(i => {
+
+        let returnDate = new Date(i.returnDate);
+
+        if(today > returnDate){
+
+            let diff = Math.ceil((today - returnDate) / (1000*60*60*24));
+            let fine = diff * 5; // ₹5 per day
+
+            let row = `
+                <tr>
+                    <td>${i.id}</td>
+                    <td>${i.name}</td>
+                    <td>${i.memberId}</td>
+                    <td>${i.issueDate}</td>
+                    <td>${i.returnDate}</td>
+                    <td>${fine}</td>
+                </tr>
+            `;
+
+            tbody.innerHTML += row;
+        }
+    });
+
+    if(tbody.innerHTML === ""){
+        tbody.innerHTML = "<tr><td colspan='6'>No overdue books</td></tr>";
+    }
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goHome(){
+    let role = localStorage.getItem("role");
+
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function goBack(){
+    window.location.href = "reports.html";
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+</script>
+
+</body>
+</html>

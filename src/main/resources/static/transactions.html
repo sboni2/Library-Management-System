@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transactions</title>
+
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 40px;
+        }
+
+        .link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            border: 2px solid black;
+            padding: 20px;
+            display: flex;
+        }
+
+        .left {
+            width: 40%;
+        }
+
+        .left div {
+            margin: 10px 0;
+        }
+
+        .footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Top -->
+<div class="topbar">
+    <span class="link" onclick="goChart()">Chart</span>
+    <h2>Transactions</h2>
+    <span class="link" onclick="goHome()">Home</span>
+</div>
+
+<!-- Main -->
+<div class="container">
+
+    <!-- Left Menu -->
+    <div class="left">
+        <div class="link" onclick="go('viewBooks.html')">Is book available?</div>
+        <div class="link" onclick="go('issueBook.html')">Issue book?</div>
+        <div class="link" onclick="go('returnBook.html')">Return book?</div>
+        <div class="link" onclick="go('payFine.html')">Pay Fine?</div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <span class="link" onclick="logout()">Log Out</span>
+</div>
+
+<script>
+
+// Role check (optional)
+let role = localStorage.getItem("role");
+
+if(!role){
+    alert("Please login first");
+    window.location.href = "index.html";
+}
+
+// Navigation
+function go(page){
+    window.location.href = page;
+}
+
+function goChart(){
+    alert("Chart not required");
+}
+
+function goHome(){
+    if(role === "admin"){
+        window.location.href = "home.html";
+    } else {
+        window.location.href = "userHome.html";
+    }
+}
+
+function logout(){
+    localStorage.clear();
+    window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
