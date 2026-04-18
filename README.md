@@ -51,15 +51,25 @@ It allows users to manage books, memberships, and transactions efficiently with 
 ## 🔹 Project Structure
 
 demo/
+
 │── src/
+
 │   ├── main/
+
 │   │   ├── java/com/example/demo/
+
 │   │   │   └── LibraryApplication.java
+
 │   │   └── resources/static/
+
 │   │       ├── index.html
+
 │   │       ├── home.html
+
 │   │       ├── userHome.html
+
 │   │       └── other pages...
+
 │── pom.xml
 
 ---
@@ -85,11 +95,13 @@ demo/
 ### 👑 Admin
 
 * Username: admin
+  
 * Password: 1234
 
 ### 👤 User
 
 * Username: user
+  
 * Password: 1234
 
 ---
@@ -97,9 +109,13 @@ demo/
 ## 🔹 Key Concepts Used
 
 * REST APIs using Spring Boot
+  
 * Role-based authentication
+  
 * Frontend–Backend integration using Fetch API
+  
 * Form validation
+  
 * Basic UI design using HTML & CSS
 
 ---
@@ -107,8 +123,11 @@ demo/
 ## 🔹 Future Enhancements
 
 * Database integration (MySQL)
+  
 * JWT Authentication
+  
 * Improved UI (React / Tailwind)
+  
 * Real-time data updates
 
 ---
